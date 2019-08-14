@@ -1,0 +1,6 @@
+These example programs are meant for distribution, and thus will not build in the april2 tree without modifications.
+
+# 针对opencv_demo.cc进行了优化
+
+1. `disable debug output` ： 
+2. 
