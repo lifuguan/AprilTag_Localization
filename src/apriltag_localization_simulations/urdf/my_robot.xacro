@@ -30,21 +30,29 @@
     <!-- <gazebo reference="base_link">
         <material>Gazebo/Orange</material>
     </gazebo> -->
-    <gazebo reference="link_chassis">
+    <gazebo reference="base_link">
         <material>Gazebo/Orange</material>
     </gazebo>
     <gazebo reference="link_left_wheel">
+        <mu1>0.1</mu1>
+        <mu2>0.1</mu2>
+        <kp>500000.0</kp>
+        <kd>10.0</kd>
         <material>Gazebo/Blue</material>
     </gazebo>
     <gazebo reference="link_right_wheel">
+        <mu1>0.1</mu1>
+        <mu2>0.1</mu2>
+        <kp>500000.0</kp>
+        <kd>10.0</kd>
         <material>Gazebo/Blue</material>
     </gazebo>
     <!-- <gazebo>
         <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
             <alwaysOn>true</alwaysOn>
             <updateRate>50.0</updateRate>
-            <leftJoint>car_base_front_left_wheel</leftJoint>
-            <rightJoint>car_base_front_right_wheel</rightJoint>
+            <leftJoint>joint_left_wheel</leftJoint>
+            <rightJoint>joint_right_wheel</rightJoint>
             <wheelSeparation>1.0</wheelSeparation>
             <wheelDiameter>0.5</wheelDiameter>
             <torque>1.0</torque>
@@ -59,62 +67,48 @@
         </plugin>
     </gazebo> -->
     <gazebo reference="camera_link">
-    <material>Gazebo/Green</material>
-    <sensor type="camera" name="camera1">
-      <update_rate>30.0</update_rate>
-      <camera name="head">
-        <horizontal_fov>1.3962634</horizontal_fov>
-        <image>
-          <width>800</width>
-          <height>800</height>
-          <format>R8G8B8</format>
-        </image>
-        <clip>
-          <near>0.02</near>
-          <far>300</far>
-        </clip>
-      </camera>
-      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-        <alwaysOn>true</alwaysOn>
-        <updateRate>0.0</updateRate>
-        <cameraName>my_robot/camera1</cameraName>
-        <imageTopicName>image_raw</imageTopicName>
-        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-        <frameName>camera</frameName>
-        <hackBaseline>0.07</hackBaseline>
-        <distortionK1>0.0</distortionK1>
-        <distortionK2>0.0</distortionK2>
-        <distortionK3>0.0</distortionK3>
-        <distortionT1>0.0</distortionT1>
-        <distortionT2>0.0</distortionT2>
-      </plugin>
-    </sensor>
-  </gazebo>
+        <material>Gazebo/Green</material>
+        <sensor type="camera" name="camera1">
+            <update_rate>30.0</update_rate>
+            <camera name="head">
+                <horizontal_fov>1.3962634</horizontal_fov>
+                <image>
+                    <width>800</width>
+                    <height>800</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.02</near>
+                    <far>300</far>
+                </clip>
+            </camera>
+            <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                <alwaysOn>true</alwaysOn>
+                <updateRate>0.0</updateRate>
+                <cameraName>my_robot/camera1</cameraName>
+                <imageTopicName>image_raw</imageTopicName>
+                <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+                <frameName>camera</frameName>
+                <hackBaseline>0.07</hackBaseline>
+                <distortionK1>0.0</distortionK1>
+                <distortionK2>0.0</distortionK2>
+                <distortionK3>0.0</distortionK3>
+                <distortionT1>0.0</distortionT1>
+                <distortionT2>0.0</distortionT2>
+            </plugin>
+        </sensor>
+    </gazebo>
 
     <link name="base_link">
-        <visual>
-            <geometry>
-                <box size =".001 .001 .001"/>
-            </geometry>
-            <origin rpy="0 0 0" xyz="0 0 0"/>
-        </visual>
-    </link>
-    <joint name="base_link_car" type="fixed">
-        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-        <parent link="base_link"/>
-        <child link="link_chassis"/>
-    </joint>
-
-    <link name="link_chassis">
         <!-- pose and inertial -->
-        <pose>0 0 1 0 0 0</pose>
+        <pose>0 0 0.4 0 0 0</pose>
         <inertial>
             <mass value="15.0"/>
             <origin xyz="0.0 0 0.1" rpy=" 0 0 0"/>
             <inertia ixx="0.12" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1" />
         </inertial>
 
-        <collision name="collision_chassis">
+        <collision name="collision_base">
             <geometry>
                 <box size="1 0.8 0.4"/>
             </geometry>
@@ -138,6 +132,8 @@
                     <ode>
                         <mu>0</mu>
                         <mu2>0</mu2>
+                        <kp>500000.0</kp>
+                        <kd>10.0</kd>
                         <slip1>1.0</slip1>
                         <slip2>1.0</slip2>
                     </ode>
@@ -154,14 +150,12 @@
 
     </link>
     <!--   Joint for chassis  -->
-    <!-- <joint name="joint_chassis" type="continuous">
+    <!-- <joint name="joint_base" type="fixed">
         <origin rpy="0 0 0" xyz="0 0 0.4"/>
-        <child link="link_chassis" />
-        <parent link="base_link"/>
-        <axis rpy="0 0 0" xyz="0 1 0"/>
+        <axis rpy="0 0 0" xyz="0 0 0"/>
         <limit effort="10000" velocity="1000"/>
-        <joint_properties damping="1.0" friction="1.0" />
-    </joint> --> 
+        <joint_properties damping="1.0" friction="0.5" />
+    </joint> -->
 
     <!-- Create camera link -->
     <link name = "camera_link">
@@ -187,15 +181,15 @@
     <joint name = "joint_camera" type = "continuous">
         <origin rpy="0 0 0" xyz="0.5 0 0.3"/>
         <child link="camera_link" />
-        <parent link="link_chassis"/>
+        <parent link="base_link"/>
         <axis rpy="0 0 0" xyz="0 1 0"/>
         <limit effort="10000" velocity="1000"/>
-        <joint_properties damping="1.0" friction="1.0" />
+        <joint_properties damping="1.0" friction="0.5" />
     </joint>
 
     <!-- Create wheel right -->
     <link name="link_right_wheel">
-         <inertial>
+        <inertial>
             <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
             <mass value="5"/>
             <inertia ixx=".1" ixy="0.0" ixz="0.0" iyy=".1" iyz="0.0" izz=".1"/>
@@ -220,16 +214,16 @@
     <joint name="joint_right_wheel" type="continuous">
         <origin rpy="0 0 0" xyz="0.333838 -0.6 -0.15"/>
         <child link="link_right_wheel" />
-        <parent link="link_chassis"/>
+        <parent link="base_link"/>
         <axis xyz="0 1 0" rpy="0 0 0"/>
         <limit effort="10000" velocity="1000"/>
-        <joint_properties damping="1.0" friction="1.0"/>
+        <joint_properties damping="1.0" friction="0.5"/>
     </joint>
 
 
     <!-- Left Wheel link -->
     <link name="link_left_wheel">
-         <inertial>
+        <inertial>
             <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
             <mass value="5"/>
             <inertia ixx=".1" ixy="0.0" ixz="0.0" iyy=".1" iyz="0.0" izz=".1"/>
@@ -255,10 +249,10 @@
     <joint name="joint_left_wheel" type="continuous">
         <origin rpy="0 0 0" xyz="0.333838 0.6 -0.15"/>
         <child link="link_left_wheel" />
-        <parent link="link_chassis"/>
+        <parent link="base_link"/>
         <axis xyz="0 1 0" rpy="0 0 0"/>
         <limit effort="10000" velocity="1000"/>
-        <joint_properties damping="1.0" friction="1.0"/>
+        <joint_properties damping="1.0" friction="0.5"/>
     </joint>
 
 </robot>
