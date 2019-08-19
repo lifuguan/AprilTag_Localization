@@ -137,6 +137,10 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/apriltag_localization_simulations_node.cpp)
 
+add_executable(tag_tf_listener src/tag_tf_listener.cpp)
+target_link_libraries(tag_tf_listener ${catkin_LIBRARIES})
+
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -199,3 +203,4 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
