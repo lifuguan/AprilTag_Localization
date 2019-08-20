@@ -1,6 +1,21 @@
-# 基于AprilTag的ROS定位系统（摄像头型号 ：mvBlueFOX-MLC200wc）
+README
+====
 
-![](/img/ros.png)
+|Author|lifuguan|
+|---|---
+|E-mail|1002732355@qq.com
+
+
+***
+
+##  目录
+* [基于AprilTag的ROS定位系统（摄像头型号 ：mvBlueFOX-MLC200wc）](#基于AprilTag的ROS定位系统（摄像头型号：mvBlueFOX-MLC200wc）)
+* [直接通过apriltag+OpenCV（使用mp4或者其他USB摄像头）](#直接通过apriltag+OpenCV（使用mp4或者其他USB摄像头）)
+* [Gazebo仿真环境下的Aprilag目标跟随](#Gazebo仿真环境下的Aprilag目标跟随)
+
+### 基于AprilTag的ROS定位系统（摄像头型号：mvBlueFOX-MLC200wc）
+---
+![](img/ros.png)
 
 
 ### ！此摄像头不通用于普通USB摄像头（必须通过调用自带的SDK）
@@ -9,7 +24,7 @@
 3. 无法使用**ROS**的*usb_cam*等常用包进行读取
 
 ## ROS调用简介
-![](/img/rosgraph.png)
+![](img/rosgraph.png)
 
 **bluefox2**
 
@@ -23,7 +38,7 @@
 
 识别在`/config/tags.yml`里标记了的*tag*
 
-![](/img/io_diagram.png)
+![](img/io_diagram.png)
 
 ## 使用方式(假设已经安装成功)
 
@@ -46,12 +61,14 @@ roslaunch apriltag_ros my_continuous_detection.launch
 3. `roslaunch apriltag_ros continuous_detection.launch`
 
 
-# 直接通过 apriltag + OpenCV （使用mp4或者其他USB摄像头）
-![](/img/opencv.png)
+### 直接通过apriltag+OpenCV（使用mp4或者其他USB摄像头）
+---
+![](img/opencv.png)
 
 ### 源码地址 [opencv_demo.cc](/src/apritag/example/opencv_demo.cc)
 
 ## 使用方式
+
 ```bash
 cmake . 
 sudo make install
@@ -65,3 +82,27 @@ opencv_demo
 2. 加入pose_estimation
 
 3. 默认取消debug模式
+
+### Gazebo仿真环境下的Aprilag目标跟随
+---
+![](img/tag_follower.png)
+
+- 包名称`apriltag_localization_simulations`
+- 使用模型`car.urdf`
+
+#### 使用步骤
+
+```bash
+roslaunch apriltag_localization_simulation gazebo_detect_simulation.launch
+
+rosrun  apriltag_localization_simulation tag_tf_listener.cpp
+```
+
+**tag_tf_listener.cpp**
+
+监听 */tag_0* 与 */camera* 之间的relative position，并转化成cmd_vel广播出去
+
+**car.urdf**
+
+tf树
+![](img/frames.png)
