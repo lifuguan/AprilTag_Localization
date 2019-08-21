@@ -139,7 +139,8 @@ include_directories(
 
 add_executable(tag_tf_listener src/tag_tf_listener.cpp)
 target_link_libraries(tag_tf_listener ${catkin_LIBRARIES})
-
+add_executable(tag_tf_follower src/tag_tf_follower.cpp)
+target_link_libraries(tag_tf_follower ${catkin_LIBRARIES})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
