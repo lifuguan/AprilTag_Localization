@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(apriltag_localization_simulations)
 
+find_package(OpenCV QUIET)
+
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
 
@@ -13,6 +15,10 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  image_transport 
+  cv_bridge
+  pcl_conversions
+  pcl_ros
 )
 
 ## System dependencies are found with CMake's conventions
@@ -105,6 +111,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
+  INCLUDE_DIRS
+    CATKIN_DEPENDS roscpp
+    pcl_conversions
+    pcl_ros
 #  INCLUDE_DIRS include
 #  LIBRARIES apriltag_localization_simulations
 #  CATKIN_DEPENDS gazebo_plugins gazebo_ros roscpp rospy std_msgs
@@ -137,10 +147,23 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/apriltag_localization_simulations_node.cpp)
 
+# tag_tf_listener
 add_executable(tag_tf_listener src/tag_tf_listener.cpp)
 target_link_libraries(tag_tf_listener ${catkin_LIBRARIES})
+# tag_tf_follower
 add_executable(tag_tf_follower src/tag_tf_follower.cpp)
 target_link_libraries(tag_tf_follower ${catkin_LIBRARIES})
+
+# tag_tf_follower_v2
+if(OpenCV_FOUND)
+    add_executable(tag_tf_follower_v2 src/tag_tf_follower_v2.cpp)
+    target_link_libraries(tag_tf_follower_v2 ${catkin_LIBRARIES})
+    target_link_libraries(tag_tf_follower_v2 ${OpenCV_LIBRARIES})
+endif(OpenCV_FOUND)
+
+# tag_tf_follower_rgbd
+add_executable(tag_tf_follower_rgbd src/tag_tf_follower_rgbd.cpp)
+target_link_libraries(tag_tf_follower_rgbd ${catkin_LIBRARIES})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -204,4 +227,3 @@ target_link_libraries(tag_tf_follower ${catkin_LIBRARIES})
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-

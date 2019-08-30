@@ -1,0 +1,9 @@
+<launch>
+
+
+    <!-- calibrate the frame from /image_raw to /image_rect -->
+    <node pkg="apriltag_localization_simulations" type="tag_tf_follower_v2" name="tag_tf_follower_v2" />
+    <node pkg="apriltag_localization_simulations" type="tag_tf_follower" name="tag_tf_follower" />
+
+    
+</launch>  
