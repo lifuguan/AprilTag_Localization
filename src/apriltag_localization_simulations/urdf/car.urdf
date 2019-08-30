@@ -33,7 +33,7 @@
   <!-- in kg-->
   <!-- Wheels -->
    --&gt; 
-                    <!-- in kg-->
+                      <!-- in kg-->
   <!-- Hokuyo Laser scanner -->
   <!-- Macro for calculating inertia of cylinder -->
   <!-- BASE-FOOTPRINT -->
@@ -313,23 +313,46 @@
         <depthImageTopicName>kinect/depth/image_raw</depthImageTopicName>
         <depthImageInfoTopicName>kinect/depth/camera_info</depthImageInfoTopicName>
         <pointCloudTopicName>kinect/depth/points</pointCloudTopicName>
-          <frameName>camera</frameName>
-          <pointCloudCutoff>0.5</pointCloudCutoff>
-          <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
-          <distortionK1>0.00000001</distortionK1>
-          <distortionK2>0.00000001</distortionK2>
-          <distortionK3>0.00000001</distortionK3>
-          <distortionT1>0.00000001</distortionT1>
-          <distortionT2>0.00000001</distortionT2>
-          <CxPrime>0</CxPrime>
-          <Cx>0</Cx>
-          <Cy>0</Cy>
-          <focalLength>0</focalLength>
-          <hackBaseline>0</hackBaseline>
-        </plugin>
-      </sensor>
-    </gazebo>
-    <!--
+        <frameName>camera</frameName>
+        <pointCloudCutoff>0.5</pointCloudCutoff>
+        <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
+        <distortionK1>0.00000001</distortionK1>
+        <distortionK2>0.00000001</distortionK2>
+        <distortionK3>0.00000001</distortionK3>
+        <distortionT1>0.00000001</distortionT1>
+        <distortionT2>0.00000001</distortionT2>
+        <CxPrime>0</CxPrime>
+        <Cx>0</Cx>
+        <Cy>0</Cy>
+        <focalLength>0</focalLength>
+        <hackBaseline>0</hackBaseline>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- Differential drive controller  -->
+  <gazebo>
+    <plugin filename="libgazebo_ros_diff_drive.so" name="differential_drive_controller_front">
+      <rosDebugLevel>Debug</rosDebugLevel>
+      <publishWheelTF>True</publishWheelTF>
+      <publishTf>1</publishTf>
+      <publishWheelJointState>true</publishWheelJointState>
+      <alwaysOn>true</alwaysOn>
+      <updateRate>100.0</updateRate>
+      <leftJoint>front_left_wheel_joint</leftJoint>
+      <rightJoint>front_right_wheel_joint</rightJoint>
+      <wheelSeparation>0.3</wheelSeparation>
+      <wheelDiameter>0.08</wheelDiameter>
+      <broadcastTF>1</broadcastTF>
+      <wheelTorque>30</wheelTorque>
+      <wheelAcceleration>1.8</wheelAcceleration>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryTopic>odom</odometryTopic>
+      <robotBaseFrame>base_link</robotBaseFrame>
+    </plugin>
+  </gazebo>
+  <!--
 	  <gazebo>
 	    <plugin name="kobuki_controller" filename="libgazebo_ros_kobuki.so">
 	      <publish_tf>1</publish_tf>
@@ -342,7 +365,7 @@
 	    </plugin>
 	  </gazebo>
 -->
-    <!--
+  <!--
 <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so" />
     <plugin filename="libgazebo_ros_joint_state_publisher.so" name="joint_state_publisher">
@@ -352,5 +375,5 @@
     </plugin>
 </gazebo>
 -->
-  </robot>
+</robot>
 
