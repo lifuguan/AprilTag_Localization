@@ -6,7 +6,7 @@
 void method_one(ros::NodeHandle nh)
 {
     ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
-    ros::Publisher pub_pose = nh.advertise<geometry_msgs::Pose>("/pose", 10);
+    //ros::Publisher pub_pose = nh.advertise<geometry_msgs::Pose>("/pose", 10);
     float dst = 1.0;
     tf::StampedTransform transform, transform_target;
     geometry_msgs::Twist vel_msg;
@@ -32,7 +32,7 @@ void method_one(ros::NodeHandle nh)
             ROS_DEBUG("Acutal position : [ x =  %f, y = %f ]", transform_target.getOrigin().z(), transform_target.getOrigin().x());
             pose_msg.position.x = transform_target.getOrigin().z();
             pose_msg.position.y = transform_target.getOrigin().x();
-            pub_pose.publish(pose_msg);
+            //pub_pose.publish(pose_msg);
         }
         catch (tf::TransformException &ex)
         {
@@ -88,39 +88,46 @@ void method_two(ros::NodeHandle nh)
     ros::Rate rate(10.0);
     while (nh.ok())
     {
-        //target_frame_broadcaster.sendTransform(tf::StampedTransform(tf::Transform(tf::Quaternion(1.57, 1.57, 0.0), tf::Vector3(0.0, 0.0, 1.05)), ros::Time::now(), "tag_0", "target_point"));
-        target_frame_broadcaster.sendTransform(tf::StampedTransform(tf::Transform(tf::Quaternion(0.0, 0.0, 0.0), tf::Vector3(0.0, 0.0, 6)), ros::Time::now(), "odom", "target_point"));
+        target_frame_broadcaster.sendTransform(tf::StampedTransform(tf::Transform(tf::Quaternion(1.57, 1.57, 0.0), tf::Vector3(0.0, 0.0, 1.5)), ros::Time::now(), "tag_0", "target_point"));
         double roll, pitch, yaw, angle;
         try
         {
             //get the relative position (on rviz)
-            target_camera_listener.lookupTransform("/camera_link", "/odom", ros::Time(0), transform_target);
+            target_camera_listener.lookupTransform("/camera_link", "/target_point", ros::Time(0), transform_target);
 
             tf::Matrix3x3(transform_target.getRotation()).getEulerYPR(yaw, pitch, roll);
             angle = yaw / M_PI * 180;
             dst = sqrt(pow(transform_target.getOrigin().x(), 2) + pow(transform_target.getOrigin().y(), 2));
-
-            ROS_INFO("DST : %f ; ANGLE : %f", dst, angle);
-            vel_msg.linear.x = 0.8 * tanh(3.8 * dst);
-            if (transform_target.getOrigin().y() == 0)
+            if (dst <= 0.00)
             {
-                theta = 0;
-            }
-            
-            else if (transform_target.getOrigin().y() < 0)
-            {
-                theta = M_PI_2 - atan(transform_target.getOrigin().x() / transform_target.getOrigin().y() * (-1));
+                vel_msg.linear.x = 0;
+                vel_msg.angular.z = 0;
+                pub.publish(vel_msg);
             }
             else
             {
-                theta = -M_PI_2 + atan(transform_target.getOrigin().x() / transform_target.getOrigin().y());
+
+                ROS_INFO("DST : %f ; ANGLE : %f", dst, angle);
+                vel_msg.linear.x = 0.5 * tanh(3.8 * dst);
+                if (transform_target.getOrigin().y() == 0)
+                {
+                    theta = 0;
+                }
+                else if (transform_target.getOrigin().y() < 0)
+                {
+                    theta = M_PI_2 - atan(transform_target.getOrigin().x() / transform_target.getOrigin().y() * (-1));
+                }
+                else
+                {
+                    theta = -M_PI_2 + atan(transform_target.getOrigin().x() / transform_target.getOrigin().y());
+                }
+
+                vel_msg.angular.z = 0.5 * (6 * theta) + ((1.5) * yaw);
+
+                ROS_INFO("theta : %f ; yaw : %f ; angular : %f; linear : %f", theta, yaw,
+                         vel_msg.angular.z,
+                         vel_msg.linear.x);
             }
-
-            vel_msg.angular.z = (7 * theta) + ((-1) * yaw);
-
-            ROS_INFO("theta : %f ; yaw : %f ; angular : %f; linear : %f", theta, yaw,
-                     vel_msg.angular.z,
-                     vel_msg.linear.x);
         }
         catch (tf::TransformException &ex)
         {
@@ -141,7 +148,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "tag_tf_follower");
     ros::NodeHandle nh;
 
-    //method_one(nh);
+    // method_one(nh);
     method_two(nh);
 
     return 0;
