@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(apriltag_localization_simulations)
 
 find_package(OpenCV QUIET)
-
+find_package(VISP REQUIRED)
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
 
@@ -130,6 +130,7 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  ${VISP_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -160,6 +161,14 @@ if(OpenCV_FOUND)
     target_link_libraries(tag_tf_follower_v2 ${catkin_LIBRARIES})
     target_link_libraries(tag_tf_follower_v2 ${OpenCV_LIBRARIES})
 endif(OpenCV_FOUND)
+
+if(OpenCV_FOUND)
+    add_executable(qrcode_detecter src/qrcode_detecter.cpp)
+    target_link_libraries(qrcode_detecter ${catkin_LIBRARIES})
+    target_link_libraries(qrcode_detecter ${OpenCV_LIBS} )
+    target_link_libraries(qrcode_detecter ${VISP_LIBRARIES}) 
+endif(OpenCV_FOUND)
+
 
 # tag_tf_follower_rgbd
 add_executable(tag_tf_follower_rgbd src/tag_tf_follower_rgbd.cpp)
